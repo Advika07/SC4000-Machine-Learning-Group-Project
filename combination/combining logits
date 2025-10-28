@@ -1,0 +1,66 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import log_loss
+
+# ------------------------------
+# 1️⃣ Load teacher predictions
+# ------------------------------
+# Assume you have CSVs or arrays of teacher outputs (probabilities)
+# Each should be shape: (num_samples, 3) → for A, B, Tie
+teacher1_preds = pd.read_csv("teacher1_logits.csv").values  # shape: (N, 3)
+teacher2_preds = pd.read_csv("teacher2_logits.csv").values  # shape: (N, 3)
+
+# ------------------------------
+# 2️⃣ Combine teacher outputs
+# ------------------------------
+# Option 1: simple average
+combined_probs = (teacher1_preds + teacher2_preds) / 2.0
+
+# Option 2: weighted average (if you trust one teacher more)
+# combined_probs = 0.6*teacher1_preds + 0.4*teacher2_preds
+
+# Optional: temperature scaling (smooth predictions)
+temperature = 2.0
+combined_probs = np.exp(np.log(combined_probs + 1e-12)/temperature)
+combined_probs /= combined_probs.sum(axis=1, keepdims=True)
+
+# ------------------------------
+# 3️⃣ Split data for student training
+# ------------------------------
+# We assume you have the true labels for training
+labels = pd.read_csv("train_labels.csv")["label"].values  # 0=A,1=B,2=Tie
+
+X_train, X_valid, y_train_probs, y_valid = train_test_split(
+    combined_probs, labels, test_size=0.2, random_state=42, stratify=labels
+)
+
+# ------------------------------
+# 4️⃣ Train a student model
+# ------------------------------
+student = LogisticRegression(
+    max_iter=2000, multi_class="multinomial"
+)
+student.fit(X_train, y_train_probs)  # soft labels can be converted to one-hot if needed
+
+# ------------------------------
+# 5️⃣ Evaluate student
+# ------------------------------
+valid_preds = student.predict_proba(X_valid)
+print("Student Log Loss:", log_loss(y_valid, valid_preds))
+
+# ------------------------------
+# 6️⃣ Predict on test set
+# ------------------------------
+# Load teacher predictions for test set
+teacher1_test = pd.read_csv("teacher1_test_logits.csv").values
+teacher2_test = pd.read_csv("teacher2_test_logits.csv").values
+
+combined_test = (teacher1_test + teacher2_test) / 2.0
+combined_test = np.exp(np.log(combined_test + 1e-12)/temperature)
+combined_test /= combined_test.sum(axis=1, keepdims=True)
+
+student_test_preds = student.predict_proba(combined_test)
+submission = pd.DataFrame(student_test_preds, columns=["A", "B", "Tie"])
+submission.to_csv("student_submission.csv", index=False)
