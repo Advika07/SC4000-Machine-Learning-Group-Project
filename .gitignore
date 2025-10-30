@@ -1,3 +1,14 @@
 # Ignore dataset
 data/train.csv
+# competition data
+lmsys-chatbot-arena/train.csv
+lmsys-chatbot-arena/test.csv
+lmsys-chatbot-arena/sample_submission.csv
+
+# large models / checkpoints
+*.pt
+*.bin
+*.safetensors
+*.ckpt
+*.pkl
 
