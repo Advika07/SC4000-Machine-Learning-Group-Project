@@ -39,7 +39,73 @@ from scipy.special import logit, expit
 from scipy.optimize import minimize
 
 # ----------------------------
-# CONFIGURATION (edit here)
+
+CONFIG = {
+    # Official data
+    "train_csv": "./data/train.csv",
+    "test_csv":  "./data/test.csv",
+
+    # Candidate model artifacts (list as many as you want; missing ones are ignored)
+    "model_specs": [
+        # Reward teacher (your RoBERTa + LoRA “teacher_logits_*” from reward-model.ipynb)
+        {
+            "name": "teacher2_reward",
+            # try common locations — whichever exists will be loaded
+            "train_path": "./combination/teacher_logits_train.csv",
+            "test_path":  "./combination/teacher_logits_test.csv",
+        },
+        {
+            "name": "teacher2_reward_alt",
+            "train_path": "./reward_teacher_outputs/teacher_logits_train.csv",
+            "test_path":  "./reward_teacher_outputs/teacher_logits_test.csv",
+        },
+
+        # (Optional) another teacher, e.g., cross-encoder
+        {
+            "name": "teacher1_cross_encoder",
+            "train_path": "./combination/teacher1_oof_probs.csv",
+            "test_path":  "./combination/teacher1_test_probs.csv",
+        },
+        {
+            "name": "teacher1_cross_encoder_alt",
+            "train_path": "./teacher1_outputs/teacher1_oof_probs.csv",
+            "test_path":  "./teacher1_outputs/teacher1_test_probs.csv",
+        },
+
+        # (Optional) baseline TF-IDF/heuristics if you saved them
+        {
+            "name": "baseline_tfidf",
+            "train_path": "./combination/tfidf_oof_probs.csv",
+            "test_path":  "./combination/tfidf_test_probs.csv",
+        },
+
+        # (Optional) student model (later)
+        {
+            "name": "student_distilled",
+            "train_path": "./combination/student_oof_probs.csv",
+            "test_path":  "./combination/student_test_probs.csv",
+        },
+    ],
+
+    # Where to write ensemble outputs
+    "runs_dir": "./combination/runs",
+
+    # CV + ensemble knobs (unchanged from before)
+    "n_folds": 5,
+    "random_state": 42,
+    "use_weighted_logit_blend": True,
+    "use_stacking_lr": True,
+    "weight_init": "equal",
+    "weight_opt_max_iter": 800,
+    "weight_opt_tolerance": 1e-8,
+    "stack_use_engineered_features": True,
+    "stack_C": 2.0,
+    "stack_max_iter": 2000,
+    "stack_solver": "lbfgs",
+    "use_length_features": True,  # uses columns present in ./data/train.csv & test.csv
+    "epsilon": 1e-9,
+}
+
 # ----------------------------
 
 CONFIG = {
