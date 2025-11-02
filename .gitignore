@@ -13,3 +13,24 @@ lmsys-chatbot-arena/sample_submission.csv
 *.pkl
 
 lmsys-chatbot-arena.zip 
+
+# --- environments & caches ---
+venv/
+__pycache__/
+.cache/
+
+# --- model checkpoints ---
+*.pth
+*.bin
+*.pt
+*.ckpt
+
+# --- logs and data ---
+*.log
+*.parquet
+
+# --- HuggingFace local checkpoints ---
+deberta_mps_head/
+
+# --- mac system files ---
+.DS_Store
