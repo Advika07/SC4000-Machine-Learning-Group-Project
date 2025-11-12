@@ -1,0 +1,46 @@
+{
+  "strategies": {
+    "weighted_logit_blend": {
+      "cv_mean": 1.031242531354156,
+      "cv_std": 0.002073355521750135,
+      "cv_losses": [
+        1.033340788794938,
+        1.0317011111890928,
+        1.0300895501967824,
+        1.0332393311707875,
+        1.0278418754191792
+      ],
+      "weights": [
+        0.5634950370753805,
+        0.4365049629236275
+      ],
+      "classwise": false,
+      "model_order": [
+        "teacher2_reward",
+        "deberta_head_only"
+      ]
+    },
+    "stacking_lr": {
+      "cv_mean": 1.0057903969651867,
+      "cv_std": 0.003131667058227573,
+      "cv_losses": [
+        1.0090339903453636,
+        1.0101184099521925,
+        1.003763455243165,
+        1.0034079060386925,
+        1.002628223246521
+      ]
+    }
+  },
+  "chosen": "stacking_lr",
+  "tie_stats": {
+    "pred_tie_rate": 0.24350609809141047,
+    "true_tie_rate": 0.30901056074603755
+  },
+  "n_models_used": 2,
+  "models_used": [
+    "teacher2_reward",
+    "deberta_head_only"
+  ],
+  "n_folds": 5
+}
