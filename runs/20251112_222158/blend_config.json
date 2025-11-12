@@ -1,0 +1,50 @@
+{
+  "chosen_strategy": "stacking_lr",
+  "feat_names": [
+    "teacher2_reward_pA",
+    "teacher2_reward_pB",
+    "teacher2_reward_pTie",
+    "teacher2_reward_margin_AB",
+    "teacher2_reward_margin_maxTie",
+    "teacher2_reward_maxprob",
+    "teacher2_reward_entropy",
+    "response_a_len",
+    "response_b_len",
+    "prompt_len",
+    "len_sum",
+    "len_diff"
+  ],
+  "model_names_available": [
+    "teacher2_reward"
+  ],
+  "config": {
+    "train_csv": "./data/train.csv",
+    "test_csv": "./data/test.csv",
+    "model_specs": [
+      {
+        "name": "teacher2_reward",
+        "train_path": "./teacher_logits_train.csv",
+        "test_path": "./teacher_logits_test.csv"
+      },
+      {
+        "name": "deberta_head_only",
+        "train_path": null,
+        "test_path": "./submission_deberta_small_calibrated.csv"
+      }
+    ],
+    "runs_dir": "./runs",
+    "n_folds": 5,
+    "random_state": 42,
+    "use_weighted_logit_blend": true,
+    "use_stacking_lr": true,
+    "weight_init": "equal",
+    "weight_opt_max_iter": 800,
+    "weight_opt_tolerance": 1e-08,
+    "stack_use_engineered_features": true,
+    "stack_C": 2.0,
+    "stack_max_iter": 2000,
+    "stack_solver": "lbfgs",
+    "use_length_features": true,
+    "epsilon": 1e-09
+  }
+}
